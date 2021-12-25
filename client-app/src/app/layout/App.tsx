@@ -23,7 +23,7 @@ function App() {
     <>
 
       <Route exact path='/' component={HomePage} />
-      <Route>
+      <Route
         path={'/(.+)'}
         render = {() => (
           <>
@@ -39,7 +39,7 @@ function App() {
             </Container>
           </>
         )}
-      </Route>
+      />
 
 
 
