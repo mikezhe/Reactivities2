@@ -36,7 +36,7 @@ namespace API.Extensions
             });
 
         });
-        services.AddMediatR(typeof(List.Handler).Assembly);
+        services.AddMediatR(typeof(Edit.Handler).Assembly);
 
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
