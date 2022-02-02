@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Activities;
 using Application.Core;
+using Application.Interfaces;
 using AutoMapper;
+using Infrastructure.Security;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,7 +41,7 @@ namespace API.Extensions
         services.AddMediatR(typeof(Edit.Handler).Assembly);
 
         services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-
+        services.AddScoped<IUserAccessor, UserAccessor >();
         return services;
         }
     
