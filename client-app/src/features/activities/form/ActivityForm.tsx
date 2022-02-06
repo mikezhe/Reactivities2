@@ -13,23 +13,15 @@ import  MyTextArea from '../../../app/common/form/MyTextArea';
 import MySelectInput from '../../../app/common/form/MySelectInput'
 import {categoryOptions} from '../../../app/common/form/options/categoryOptions'
 import MyDateInput from '../../../app/common/form/MyDateInput';
-import { Activity } from '../../../app/models/activity';
+import {  ActivityFormValues } from '../../../app/models/activity';
 
 export default observer(function ActivityForm() {
     const history = useHistory();
     const { activityStore } = useStore();
-    const { createActivity, updateActivity, loading,
+    const { createActivity, updateActivity,
         loadActivity, loadingInitial } = activityStore;
     const { id } = useParams<{ id: string }>();
-    const [activity, setActivity] = useState<Activity>({
-        id: '',
-        title: '',
-        description: '',
-        date: null,
-        category: '',
-        city: '',
-        venue: ''
-    });
+    const [activity, setActivity] = useState<ActivityFormValues>(new ActivityFormValues());
 const validationSchema =  Yup.object({
 title: Yup.string().required('The activity title is required'),
 description: Yup.string().required('The activity description is required'),
@@ -40,13 +32,13 @@ venue: Yup.string().required()
 })
     useEffect(() => {
         if (id) {
-            loadActivity(id).then(activity => setActivity(activity!))
+            loadActivity(id).then(activity => setActivity(new ActivityFormValues(activity)))
         }
     }, [id, loadActivity]);
      
-    function handleFormSubmit(activity: Activity)
+    function handleFormSubmit(activity: ActivityFormValues)
     {
-      if (activity.id.length===0 )
+      if (!activity.id )
       {
           let newActivity = {
               ...activity,
@@ -86,8 +78,9 @@ venue: Yup.string().required()
                             <Header content='Location Details' sub color='teal'></Header>
                         <MyTextInput  placeholder='City'  name='city'  />
                         <MyTextInput  placeholder='Venue' name='venue'  />
-                        <Button loading={loading}
+                        <Button 
                         disabled={isSubmitting ||  !dirty || !isValid}
+                        loading={isSubmitting}
                          floated='right'
                           positive
                            type='submit'
