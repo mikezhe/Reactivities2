@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { Formik, Form } from 'formik';
 import { useStore } from "../../app/stores/store";
-import Yup from 'yup';
+import * as Yup from 'yup';
 import MyTextArea from '../../app/common/form/MyTextArea';
 import MyTextInput from '../../app/common/form/MyTextInput';
 import { Button } from 'semantic-ui-react';
