@@ -16,31 +16,31 @@ namespace Application.Profiles
     {
         public class Command : IRequest<Result<Unit>>
         {
-            public string Bio {get;set;}
-            public string DisplayName{get;set;}
+            public string Bio { get; set; }
+            public string DisplayName { get; set; }
         }
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-               RuleFor( x => x.DisplayName).NotEmpty();
+                RuleFor(x => x.DisplayName).NotEmpty();
             }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
-        private readonly DataContext _context;
-        private readonly IUserAccessor _userAccessor;
+            private readonly DataContext _context;
+            private readonly IUserAccessor _userAccessor;
 
             public Handler(DataContext context, IUserAccessor userAccessor)
             {
-            _userAccessor = userAccessor;
-            _context = context;
+                _userAccessor = userAccessor;
+                _context = context;
 
             }
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var user = await  _context.Users.FirstOrDefaultAsync(u => u.UserName == _userAccessor.GetUsername());
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == _userAccessor.GetUsername());
                 user.Bio = request.Bio ?? user.Bio;
                 user.DisplayName = request.DisplayName ?? user.DisplayName;
                 var res = await _context.SaveChangesAsync() > 0;

@@ -14,11 +14,12 @@ namespace Application.Comments
 {
     public class List
     {
-        public class Query : IRequest<Result<List<CommentDto>>>
+        public class Query : IRequest<Result<PagedList<CommentDto>>>
         {
             public Guid ActivityId {get;set;}
+            public PagingParams Params {get;set;}
         }
-        public class Handler : IRequestHandler<Query, Result<List<CommentDto>>>
+        public class Handler : IRequestHandler<Query, Result<PagedList<CommentDto>>>
         {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
@@ -29,15 +30,16 @@ namespace Application.Comments
 
             }
 
-            public async Task<Result<List<CommentDto>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<PagedList<CommentDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-               var comments = await _context.Comments
+               var  query = _context.Comments
                                     .Where(x => x.Activity.Id == request.ActivityId )
                                     .OrderBy(x => x.CreatedAt)
                                     .ProjectTo<CommentDto>(_mapper.ConfigurationProvider)
-                                    .ToListAsync();
-
-                return  Result<List<CommentDto>> .Success(comments);
+                                   .AsQueryable();
+                return  Result<PagedList<CommentDto>> .Success(
+                    await PagedList<CommentDto>.CreateAsync(query, request.Params.PageNumber, request.Params.PageSize)
+                );
             }
         }
     }
